@@ -45,6 +45,7 @@ public class VTPerformanceTest {
     static final int TIME_PER_ITER = 2;
 
     private static final String MS_DELAY = "100"; // 100 ms (simulate a network delay)
+    private static final String MAX_COMMIT_THREADS = "100";
     private static final String RESTART_EXECUTOR_METHOD_NAME = "restartExecutor";
     private static final String SHUTDOWN_EXECUTOR_METHOD_NAME = "shutdownExecutorNow";
     private static MethodHandle restartExecutorMH; // method handle to restart the executor
@@ -55,10 +56,12 @@ public class VTPerformanceTest {
     public static class VTBenchmarkState {
         @Param({"0", MS_DELAY}) // run the benchmark twice with and without simulating a network delay
         int networkDelay;
+        @Param({"1", MAX_COMMIT_THREADS})
+        int maxTwoPhaseCommitThreads;
 
         @Setup(Level.Trial)
         public void doSetup() {
-            beforeClass(this.getClass().getName(), true, true);
+            beforeClass(this.getClass().getName(), true, true, maxTwoPhaseCommitThreads);
         }
 
         @TearDown(Level.Trial)
@@ -75,10 +78,12 @@ public class VTPerformanceTest {
     public static class STBenchmarkState {
         @Param({"0", MS_DELAY})
         int networkDelay;
+        @Param({"1", MAX_COMMIT_THREADS})
+        int maxTwoPhaseCommitThreads;
 
         @Setup(Level.Trial)
         public void doSetup() {
-            beforeClass(this.getClass().getName(), true, false);
+            beforeClass(this.getClass().getName(), true, false, maxTwoPhaseCommitThreads);
         }
 
         @TearDown(Level.Trial)
@@ -98,7 +103,7 @@ public class VTPerformanceTest {
 
         @Setup(Level.Trial)
         public void doSetup() {
-            beforeClass(this.getClass().getName(), false, false);
+            beforeClass(this.getClass().getName(), false, false, 1);
         }
     }
 
@@ -126,7 +131,7 @@ public class VTPerformanceTest {
         A.commit();
     }
 
-    public static void beforeClass(String msg, boolean async, boolean enableVT) {
+    public static void beforeClass(String msg, boolean async, boolean enableVT, int maxTwoPhaseCommitThreads) {
         CoordinatorEnvironmentBean configBean = arjPropertyManager.getCoordinatorEnvironmentBean();
 
         configBean.setAsyncPrepare(async);
@@ -135,6 +140,7 @@ public class VTPerformanceTest {
 
         configBean.setAsyncBeforeSynchronization(async);
         configBean.setAsyncAfterSynchronization(async);
+        configBean.setMaxTwoPhaseCommitThreads(maxTwoPhaseCommitThreads);
 
         // TwoPhaseCommitThreadPool.restartExecutor executor is required, but it is package private
         // so we need to use method handles (or reflection):

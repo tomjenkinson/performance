@@ -100,8 +100,11 @@ function generate_csv_files {
 }
 
 echo "JMH benchmark run (with args $JMHARGS)\n" > $ofile
-generate_csv_files
-regression_check "$@"
+#generate_csv_files
+${WORKSPACE}/build.sh -f narayana/pom.xml clean install -DskipTests
+run_bm narayana/ArjunaCore/arjuna "com.hp.mwtests.ts.arjuna.performance.VTPerformanceTest.*" main
+
+#regression_check "$@"
 rv=$?
 
 exit $rv
