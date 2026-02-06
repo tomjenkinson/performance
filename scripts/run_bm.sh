@@ -2,7 +2,7 @@
 # We could add -prof stack ?
 # -i (1 iteration), -wi (10 warm ups), -r (300 seconds at each iteration)
 # use java -jar <maven module>/target/benchmarks.jar -h for options
-[ ! -z "${THREAD_COUNTS}" ] && THREAD_ARG=`echo $THREAD_COUNTS | cut -f 1 -d " "` || THREAD_ARG="240"
+[ ! -z "${THREAD_COUNTS}" ] && THREAD_ARG=`echo $THREAD_COUNTS | cut -f 1 -d " "` || THREAD_ARG="10000"
 [ -z "${JMHARGS}" ] && JMHARGS="-t $THREAD_ARG -r 30 -f 3 -wi 5 -i 5"
 
 [ -z "${WORKSPACE}" ] && WORKSPACE=`pwd`

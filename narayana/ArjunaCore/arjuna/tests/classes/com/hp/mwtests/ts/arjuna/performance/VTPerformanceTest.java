@@ -39,13 +39,13 @@ import static com.hp.mwtests.ts.arjuna.performance.VTPerformanceTest.THREADS;
 @Warmup(iterations = VTPerformanceTest.ITERATIONS, time = VTPerformanceTest.TIME_PER_ITER, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = VTPerformanceTest.ITERATIONS, time = VTPerformanceTest.TIME_PER_ITER, timeUnit = TimeUnit.SECONDS)
 public class VTPerformanceTest {
-    static final int THREADS = 10;//_000; //Threads.MAX;
+    static final int THREADS = 10000;//_000; //Threads.MAX;
     static final int FORKS = 2;
     static final int ITERATIONS = 5;
     static final int TIME_PER_ITER = 2;
 
     private static final String MS_DELAY = "100"; // 100 ms (simulate a network delay)
-    private static final String MAX_COMMIT_THREADS = "100";
+    private static final String MAX_COMMIT_THREADS = "1000";
     private static final String RESTART_EXECUTOR_METHOD_NAME = "restartExecutor";
     private static final String SHUTDOWN_EXECUTOR_METHOD_NAME = "shutdownExecutorNow";
     private static MethodHandle restartExecutorMH; // method handle to restart the executor
